@@ -161,6 +161,34 @@ proc run() =
  38.46 ┤                                                     ││ │││ 
  37.46 ┤                                                     ╰╯ │││ 
  36.45 ┤                                                        ╰╯╰ """
+
+      set14 = @[2f64, 1, 1, 2, -2, 5, 7, 11, 3, 7, 4, 5, 6, 9, 4, 0, 
+                   6, 1, 5, 3, 6, 2]
+      string14 = """ 10.65 ┤                        ╭──╮                    ╭╮                              
+  8.13 ┼                     ╭──╯  ╰╮    ╭╮          ╭──╯╰╮                             
+  5.61 ┤                  ╭──╯      ╰╮╭──╯╰──────────╯    ╰─╮     ╭──╮    ╭───╮ ╭────╮  
+  3.09 ┼──╮     ╭──╮    ╭─╯          ╰╯                     ╰──╮ ╭╯  ╰─╮╭─╯   ╰─╯    ╰─ 
+  0.57 ┤--╰─────╯--╰──╮╭╯--------------------------------------╰─╯-----╰╯---------------
+ -1.95 ┤              ╰╯                                                              22 
+          Diagram with x-axis"""
+
+
+      set15 = @[2f64, 1, 1, 2, -2, 5, 7, 11, 3, 7, 1]
+      string15 = """ 11.00 ┤      ╭╮   
+ 10.00 ┤      ││   
+  9.00 ┼      ││   
+  8.00 ┤      ││   
+  7.00 ┤     ╭╯│╭╮ 
+  6.00 ┤     │ │││ 
+  5.00 ┤    ╭╯ │││ 
+  4.00 ┤    │  │││ 
+  3.00 ┤    │  ╰╯│ 
+  2.00 ┼╮ ╭╮│    │ 
+  1.00 ┤╰─╯││    ╰ 
+  0.00 ┤---││------
+ -1.00 ┤   ││      
+ -2.00 ┤   ╰╯      """
+
     test "set 1":
       check plot(set1) == string1
     test "set 2":
@@ -187,5 +215,9 @@ proc run() =
       check plot(set12, height=5, width=45) == string12
     test "set 13":
       check plot(set13, width=(-10), height=(-10), offset=(-1)) == string13
+    test "set 14":
+      check plot(set14, caption="Diagram with x-axis", height=5, width=80, show_x_axis=true, show_max_x=true) == string14
+    test "set 15":
+      check plot(set15, width=(-10), height=(-10), offset=(-1), show_x_axis=true) == string15
 run()
   

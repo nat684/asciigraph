@@ -8,17 +8,18 @@ srcDir = "src"
 
 # Dependencies
 
-requires "nim >= 0.19.0"
+#requires "nim >= 0.19.0"
+requires "nim <= 2.2.0"
 
-proc configForTests() =
-  --hints: off
-  --linedir: on
-  --stacktrace: on
-  --linetrace: on
-  --debuginfo
-  --path: "."
-  --run
+# proc configForTests() =
+#   --hints: off
+#   --linedir: on
+#   --stacktrace: on
+#   --linetrace: on
+#   --debuginfo
+#   --path: "."
+#   --run
 
-task test, "run tests":
-  configForTests()
-  setCommand "c", "tests/test.nim"
+# task test, "run tests":
+#   configForTests()
+#   setCommand "c", "tests/test.nim"

@@ -27,10 +27,10 @@ func interpolateArray(data: openArray[float64], fitCount: int): seq[float64] =
   interpolateData.add(data[data.high])
   return interpolateData
 
-func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: int = 3, caption: string = ""): string =
+func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: int = 3, caption: string = "", show_x_axis: bool = false, show_max_x: bool = false): string =
   var l_height, l_offset: int
   var interpolatedSeries: seq[float64]
-  if width > 0:
+  if width > 0 and width >= len(series):  #the minimal width is the number of data points
     interpolatedSeries = interpolateArray(series, width)
   else:
     interpolatedSeries = interpolateArray(series, len(series))
@@ -60,12 +60,12 @@ func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: 
 
     rows = abs(intmax2 - intmin2)
     width = len(interpolatedSeries) + l_offset
-    plot = newSeqWith(rows + 1, newSeq[string](width))
+    plot = newSeqWith(rows + 1, newSeq[string](width))  # resulting "image"
   
   for i in 0..rows:
     for j in 0..<width:
-      plot[i][j] = " "
-  
+      plot[i][j] = " " # initialize ouput with space (empty char)
+
   var 
     precision = 2
     logMaximum = log10(max(abs(maximum), abs(minimum)))
@@ -84,8 +84,6 @@ func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: 
 
   formatValue(result = maxString, value=maximum, specifier=specifier) # updated format
   formatValue(result = minString, value=minimum, specifier=specifier)
-  #maximum.format(specifier, maxString)
-  #minimum.format(specifier, minString)
   
   let 
     maxNumLength = len(maxString)
@@ -102,13 +100,12 @@ func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: 
     specifier = "$1.$2f" % [$(maxWidth + 1), $precision]
     var label: string
 
-    #magnitude.format(specifier, label)
     formatValue(result=label, value = magnitude, specifier = specifier) # updated format
 
 
     var w = y - intmin2
     var h = max(l_offset - len(label), 0)
-    
+
     plot[w][h] = label
     if y == 0:
       plot[w][l_offset - 1] = "┼"
@@ -138,6 +135,26 @@ func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: 
       for y in start..<`end`:
         plot[rows - y][x + l_offset] = "│"
 
+  # Add x-axis
+  if show_x_axis:
+
+    # draw x axis
+    for x_axis_point in 3..(len(plot[0])-1):  # start drawing right of the y axis; (| 0.00| |┼|) needs 3 colums in plot-variable
+      #debugEcho x_axis_point
+
+      if plot[intmax2][x_axis_point] == " ":  # only draw on empty space
+        plot[intmax2][x_axis_point] = "-" #"-"
+      #else:
+        #debugEcho "skipped cause not empty"
+        
+  # draw number of items
+  if show_max_x:
+
+    var number_of_points: int = len(series)
+    var max_x_str: string = $number_of_points # convert number of points to string
+    plot[intmax2+1][len(plot[0])-len(max_x_str)] = max_x_str  # place string with max x number below the x axis
+
+
   var lines: string
   for h, horizontal in plot:
     if h != 0:
@@ -149,7 +166,7 @@ func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: 
     lines.add("\n")
     lines.add(repeat(" ", l_offset + maxWidth + 2))
     lines.add(caption)
-  lines
+  return lines
 
 when isMainModule:
   var data = @[3f64, 4, 9, 6, 2, 4, 5, 8, 5, 10, 2, 7, 2, 5, 6]
