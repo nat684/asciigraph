@@ -25,7 +25,7 @@ func interpolateArray(data: openArray[float64], fitCount: int): seq[float64] =
     interpolateData.add(linearInterpolate(data[int(before)], data[int(after)], atPoint))
   
   interpolateData.add(data[data.high])
-  interpolateData
+  return interpolateData
 
 func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: int = 3, caption: string = ""): string =
   var l_height, l_offset: int
@@ -81,9 +81,11 @@ func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: 
   var 
     specifier = "0.$1f" % $precision
     maxString, minString: string
-    
-  maximum.format(specifier, maxString)
-  minimum.format(specifier, minString)
+
+  formatValue(result = maxString, value=maximum, specifier=specifier) # updated format
+  formatValue(result = minString, value=minimum, specifier=specifier)
+  #maximum.format(specifier, maxString)
+  #minimum.format(specifier, minString)
   
   let 
     maxNumLength = len(maxString)
@@ -99,7 +101,11 @@ func plot*(series: openArray[float64], width: int = 0, height: int = 0, offset: 
   
     specifier = "$1.$2f" % [$(maxWidth + 1), $precision]
     var label: string
-    magnitude.format(specifier, label)
+
+    #magnitude.format(specifier, label)
+    formatValue(result=label, value = magnitude, specifier = specifier) # updated format
+
+
     var w = y - intmin2
     var h = max(l_offset - len(label), 0)
     
